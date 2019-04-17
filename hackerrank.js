@@ -3,7 +3,7 @@ const puppeteer = require("puppeteer");
 async function run() {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
-    await page.setViewport({ width: 1200, height: 1200 });
+    await page.setViewport({ width: 2880, height: 1800, deviceScaleFactor: 2 });
 
     const BADGE_LIST_SELECTOR = "div.badges-list";
 
