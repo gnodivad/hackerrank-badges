@@ -8,23 +8,25 @@ async function run() {
 
     await page.goto("https://www.hackerrank.com/DavidODW");
 
-    const svgImage = await page.$(
-        "div > div.badges-list > div:nth-child(1) > div > div > svg"
-    );
+    const badgesListLength = await page.evaluate(sel => {
+        return element = document.querySelector(sel).childElementCount;
+    }, BADGE_LIST_SELECTOR);
 
-    const title = await page.evaluate(element => element.querySelector(".badge-title").innerHTML, svgImage);
+    for (let i = 1; i <= badgesListLength; i++) {
+        console.log(`Downloading ${i} of ${badgesListLength} badges`);
 
-    await svgImage.screenshot({
-        path: `screenshots/badge-${getValidBadgeName(title)}.jpg`,
-        type: "jpeg",
-        quality: 100
-    });
+        let svgImage = await page.$(
+            `div > div.badges-list > div:nth-child(${i}) > div > div > svg`
+        );
 
-    // let badgesListLength = await page.evaluate(sel => {
-    //     let element = document.querySelector(sel);
+        let title = await page.evaluate(element => element.querySelector(".badge-title").textContent, svgImage);
 
-    //     return element.childElementCount;
-    // }, BADGE_LIST_SELECTOR);
+        await svgImage.screenshot({
+            path: `screenshots/badge-${getValidBadgeName(title)}.jpg`,
+            type: "jpeg",
+            quality: 100
+        });
+    }
 
     browser.close();
 }
