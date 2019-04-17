@@ -8,12 +8,14 @@ async function run() {
 
     await page.goto("https://www.hackerrank.com/DavidODW");
 
-    await page.waitForSelector("div > div.badges-list > div:nth-child(1) > div > div > svg");
+    const svgImage = await page.$(
+        "div > div.badges-list > div:nth-child(1) > div > div > svg"
+    );
 
-    const svgImage = await page.$("div > div.badges-list > div:nth-child(1) > div > div > svg");
+    const title = await page.evaluate(element => element.querySelector(".badge-title").innerHTML, svgImage);
 
     await svgImage.screenshot({
-        path: "screenshots/logo-screenshot.jpg",
+        path: `screenshots/badge-${getValidBadgeName(title)}.jpg`,
         type: "jpeg",
         quality: 100
     });
@@ -25,6 +27,10 @@ async function run() {
     // }, BADGE_LIST_SELECTOR);
 
     browser.close();
+}
+
+function getValidBadgeName($title) {
+    return $title.toLowerCase().replace(/ /g, "-");
 }
 
 run();
